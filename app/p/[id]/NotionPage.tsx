@@ -5,6 +5,7 @@ import { Collection } from 'react-notion-x/build/third-party/collection'
 import { useEffect, useState, useRef } from 'react'
 import CalendarFallback from './CalendarFallback'
 import TimelineFallback from './TimelineFallback'
+import TableFallback from './TableFallback'
 
 interface NotionPageProps {
   recordMap: any
@@ -56,6 +57,10 @@ export default function NotionPage({ recordMap }: NotionPageProps) {
 
   if (isCollectionPage && viewType === 'timeline') {
     return <TimelineFallback recordMap={recordMap} />
+  }
+
+  if (isCollectionPage && viewType === 'table') {
+    return <TableFallback recordMap={recordMap} />
   }
 
   return (
