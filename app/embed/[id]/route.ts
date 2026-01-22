@@ -12,7 +12,8 @@ export async function GET(
   const pageId = params.id
   const baseUrl = request.nextUrl.origin
 
-  const notionUrl = `https://www.notion.so/${pageId}`
+  // Use notion.site which may have different rate limits
+  const notionUrl = `https://andrewhartzler.notion.site/${pageId}`
 
   const response = await fetch(notionUrl, {
     headers: {
@@ -32,6 +33,7 @@ export async function GET(
 
   html = html.replace(/https:\/\/www\.notion\.so/g, baseUrl)
   html = html.replace(/https:\/\/notion\.so/g, baseUrl)
+  html = html.replace(/https:\/\/andrewhartzler\.notion\.site/g, baseUrl)
 
   const res = new NextResponse(html, {
     headers: {

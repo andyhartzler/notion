@@ -19,7 +19,8 @@ export async function middleware(request: NextRequest) {
   const isApi = pathname.startsWith('/api/')
   const cacheTime = isAsset ? 31536000 : (isApi ? 60 : 3600)
 
-  const notionUrl = `https://www.notion.so${pathname}${request.nextUrl.search}`
+  // Use notion.site which may have different rate limits
+  const notionUrl = `https://andrewhartzler.notion.site${pathname}${request.nextUrl.search}`
   const cookies = request.headers.get('cookie') || ''
 
   try {
@@ -47,6 +48,7 @@ export async function middleware(request: NextRequest) {
       const baseUrl = request.nextUrl.origin
       text = text.replace(/https:\/\/www\.notion\.so/g, baseUrl)
       text = text.replace(/https:\/\/notion\.so/g, baseUrl)
+      text = text.replace(/https:\/\/andrewhartzler\.notion\.site/g, baseUrl)
 
       const res = new NextResponse(text, {
         status: response.status,
