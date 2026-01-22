@@ -5,6 +5,32 @@
 body {
   margin: 0;
   padding: 0;
+  background: #191919;
+}
+
+/* Dark mode for Notion pages */
+.notion-page {
+  background: #191919 !important;
+}
+
+.notion {
+  --fg-color: rgba(255, 255, 255, 0.81) !important;
+  --fg-color-0: rgba(255, 255, 255, 0.81) !important;
+  --fg-color-1: rgba(255, 255, 255, 0.81) !important;
+  --fg-color-2: rgba(255, 255, 255, 0.6) !important;
+  --fg-color-3: rgba(255, 255, 255, 0.5) !important;
+  --fg-color-4: rgba(255, 255, 255, 0.4) !important;
+  --fg-color-5: rgba(255, 255, 255, 0.3) !important;
+  --fg-color-6: rgba(255, 255, 255, 0.2) !important;
+  --bg-color: #191919 !important;
+  --bg-color-0: #191919 !important;
+  --bg-color-1: #202020 !important;
+  --bg-color-2: #2f2f2f !important;
+}
+
+.dark-mode {
+  --fg-color: rgba(255, 255, 255, 0.81) !important;
+  --bg-color: #191919 !important;
 }
 
 /* Fix for notion content display */

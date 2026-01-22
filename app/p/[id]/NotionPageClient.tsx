@@ -23,29 +23,36 @@ export default function NotionPageClient({ recordMap }: { recordMap: any }) {
   }
 
   return (
-    <div>
+    <div style={{ background: '#191919', minHeight: '100vh' }}>
       <header style={{
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        background: '#002855',
-        color: 'white',
-        padding: '0.6rem 1.5rem',
+        background: '#191919',
+        borderBottom: '1px solid rgba(255,255,255,0.1)',
+        color: 'rgba(255,255,255,0.81)',
+        padding: '0 96px',
+        height: '45px',
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+        alignItems: 'center'
       }}>
-        <Link href="/" style={{ color: 'white', textDecoration: 'none', fontWeight: 600 }}>
+        <Link href="/" style={{
+          color: 'rgba(255,255,255,0.81)',
+          textDecoration: 'none',
+          fontWeight: 500,
+          fontSize: '14px'
+        }}>
           Together KC
         </Link>
         <button onClick={handleLogout} style={{
           background: 'transparent',
-          border: '1px solid rgba(255,255,255,0.3)',
-          color: 'white',
-          padding: '0.4rem 0.8rem',
+          border: '1px solid rgba(255,255,255,0.2)',
+          color: 'rgba(255,255,255,0.6)',
+          padding: '4px 12px',
           borderRadius: '4px',
-          cursor: 'pointer'
+          cursor: 'pointer',
+          fontSize: '14px'
         }}>
           Logout
         </button>

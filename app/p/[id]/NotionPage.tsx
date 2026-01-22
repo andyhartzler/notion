@@ -58,7 +58,7 @@ export default function NotionPage({ recordMap }: NotionPageProps) {
       <NotionRenderer
         recordMap={recordMap}
         fullPage={true}
-        darkMode={false}
+        darkMode={true}
         mapPageUrl={(id) => `/p/${id}`}
         showCollectionViewDropdown={true}
         components={{
