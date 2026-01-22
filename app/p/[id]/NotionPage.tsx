@@ -65,6 +65,18 @@ export default function NotionPage({ recordMap }: NotionPageProps) {
     }
   }, [recordMap])
 
+  // Check if this is a collection/database page
+  const blocks = recordMap.block || {}
+  const firstBlockId = Object.keys(blocks)[0]
+  const firstBlock = blocks[firstBlockId]
+  const isCollectionPage = firstBlock?.value?.type === 'collection_view_page' || firstBlock?.value?.type === 'collection_view'
+
+  // Get page title for collection pages
+  const collectionIds = Object.keys(recordMap.collection || {})
+  const collectionName = collectionIds.length > 0
+    ? recordMap.collection[collectionIds[0]]?.value?.name?.[0]?.[0]
+    : 'Database'
+
   return (
     <ErrorBoundary
       fallback={
@@ -83,6 +95,28 @@ export default function NotionPage({ recordMap }: NotionPageProps) {
           Collection,
         }}
       />
+
+      {/* Debug info for collection pages - remove after testing */}
+      {isCollectionPage && (
+        <div style={{
+          padding: '1rem',
+          margin: '1rem',
+          background: '#f0f0f0',
+          borderRadius: '4px',
+          fontSize: '12px'
+        }}>
+          <strong>Debug Info:</strong>
+          <br />Page Type: {firstBlock?.value?.type}
+          <br />Collection: {collectionName}
+          <br />Block Count: {Object.keys(blocks).length}
+          <br />Collection Views: {Object.keys(recordMap.collection_view || {}).length}
+          <br />Collection Query Items: {
+            Object.values(recordMap.collection_query || {})
+              .flatMap((coll: any) => Object.values(coll))
+              .reduce((sum: number, view: any) => sum + (view?.collection_group_results?.blockIds?.length || 0), 0)
+          }
+        </div>
+      )}
     </ErrorBoundary>
   )
 }
