@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export const runtime = 'edge'
 
+// Cache pages for 5 minutes to avoid rate limiting
+export const revalidate = 300
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -9,7 +12,6 @@ export async function GET(
   const pageId = params.id
   const baseUrl = request.nextUrl.origin
 
-  // Fetch directly from notion.so (exactly like embednotion.com does)
   const notionUrl = `https://www.notion.so/${pageId}`
 
   const response = await fetch(notionUrl, {
@@ -18,6 +20,8 @@ export async function GET(
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
       'Accept-Language': 'en-US,en;q=0.9',
     },
+    // Cache at the fetch level too
+    next: { revalidate: 300 }
   })
 
   if (!response.ok) {
@@ -26,20 +30,18 @@ export async function GET(
 
   let html = await response.text()
 
-  // Rewrite ALL notion URLs to go through our proxy
   html = html.replace(/https:\/\/www\.notion\.so/g, baseUrl)
   html = html.replace(/https:\/\/notion\.so/g, baseUrl)
 
-  // Build response with proper headers
   const res = new NextResponse(html, {
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': 'true',
+      'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
     },
   })
 
-  // Forward cookies with SameSite=None for iframe support
   if (typeof response.headers.getSetCookie === 'function') {
     for (const cookie of response.headers.getSetCookie()) {
       let c = cookie

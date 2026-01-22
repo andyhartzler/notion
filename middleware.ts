@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server'
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  // Proxy everything except /embed/* to Notion
+  // Let /embed/* routes pass through to the route handler
   if (pathname.startsWith('/embed/')) {
     const response = NextResponse.next()
     response.headers.delete('X-Frame-Options')
@@ -12,7 +12,13 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
-  // Proxy all other paths to Notion (API, assets, etc.)
+  // Determine cache time based on path type
+  // Assets are immutable (hashed filenames), cache forever
+  // API calls need fresh data, cache briefly
+  const isAsset = pathname.startsWith('/_assets/') || pathname.startsWith('/images/') || pathname.startsWith('/icons/')
+  const isApi = pathname.startsWith('/api/')
+  const cacheTime = isAsset ? 31536000 : (isApi ? 60 : 3600)
+
   const notionUrl = `https://www.notion.so${pathname}${request.nextUrl.search}`
   const cookies = request.headers.get('cookie') || ''
 
@@ -29,6 +35,8 @@ export async function middleware(request: NextRequest) {
         'Cookie': cookies,
       },
       body: request.method !== 'GET' && request.method !== 'HEAD' ? await request.arrayBuffer() : undefined,
+      // @ts-ignore - Next.js extended fetch
+      next: { revalidate: cacheTime }
     })
 
     const contentType = response.headers.get('content-type') || 'application/octet-stream'
@@ -46,11 +54,10 @@ export async function middleware(request: NextRequest) {
           'Content-Type': contentType,
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Credentials': 'true',
-          'Cache-Control': response.headers.get('cache-control') || 'public, max-age=3600',
+          'Cache-Control': `public, s-maxage=${cacheTime}, stale-while-revalidate=${cacheTime * 2}`,
         },
       })
 
-      // Forward cookies
       if (typeof response.headers.getSetCookie === 'function') {
         for (const cookie of response.headers.getSetCookie()) {
           let c = cookie.replace(/Domain=[^;]+;?/gi, '').replace(/SameSite=[^;]+/gi, 'SameSite=None')
@@ -62,7 +69,7 @@ export async function middleware(request: NextRequest) {
       return res
     }
 
-    // For binary content, pass through
+    // For binary content, pass through with aggressive caching
     const body = await response.arrayBuffer()
     const res = new NextResponse(body, {
       status: response.status,
@@ -70,7 +77,7 @@ export async function middleware(request: NextRequest) {
         'Content-Type': contentType,
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': 'true',
-        'Cache-Control': response.headers.get('cache-control') || 'public, max-age=31536000',
+        'Cache-Control': `public, s-maxage=${cacheTime}, stale-while-revalidate=${cacheTime * 2}`,
       },
     })
 
