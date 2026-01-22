@@ -13,15 +13,14 @@ export default function NotionPage({ recordMap }: NotionPageProps) {
     // Debug log
     console.log('NotionPage mounted')
     console.log('RecordMap keys:', Object.keys(recordMap))
-    console.log('Has collection:', !!recordMap.collection)
-    console.log('Has collection_view:', !!recordMap.collection_view)
-    console.log('Has collection_query:', !!recordMap.collection_query)
+    console.log('Has collection:', !!recordMap.collection, 'count:', Object.keys(recordMap.collection || {}).length)
+    console.log('Has collection_view:', !!recordMap.collection_view, 'count:', Object.keys(recordMap.collection_view || {}).length)
+    console.log('Has collection_query:', !!recordMap.collection_query, 'count:', Object.keys(recordMap.collection_query || {}).length)
 
-    if (recordMap.collection) {
-      console.log('Collections:', Object.keys(recordMap.collection))
-    }
     if (recordMap.collection_view) {
-      console.log('Collection views:', Object.keys(recordMap.collection_view))
+      for (const [id, view] of Object.entries(recordMap.collection_view as Record<string, any>)) {
+        console.log('View:', id, 'type:', view?.value?.type, 'name:', view?.value?.name)
+      }
     }
   }, [recordMap])
 
@@ -31,6 +30,7 @@ export default function NotionPage({ recordMap }: NotionPageProps) {
       fullPage={true}
       darkMode={false}
       mapPageUrl={(id) => `/p/${id}`}
+      showCollectionViewDropdown={true}
       components={{
         Collection,
       }}

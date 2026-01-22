@@ -97,17 +97,60 @@ body {
 }
 
 /* Calendar specific styles */
+.notion-calendar {
+  width: 100% !important;
+  min-height: 600px !important;
+}
+
 .notion-calendar-header {
   display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 8px 0 !important;
+}
+
+.notion-calendar-header-inner {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
 }
 
 .notion-calendar-body {
   display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
 }
 
 .notion-calendar-view {
   width: 100% !important;
   overflow-x: auto;
+  min-height: 500px;
+}
+
+.notion-calendar-view-inner {
+  min-width: 100% !important;
+}
+
+/* Calendar day cells */
+.notion-calendar-day {
+  min-height: 100px !important;
+  border: 1px solid #e0e0e0 !important;
+}
+
+.notion-calendar-day-inner {
+  padding: 4px !important;
+}
+
+/* Calendar items */
+.notion-calendar-item {
+  display: block !important;
+  padding: 2px 4px !important;
+  margin: 2px 0 !important;
+  background: #f0f0f0 !important;
+  border-radius: 3px !important;
+  font-size: 12px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
 }
 
 /* Ensure collection pages render properly */
