@@ -16,6 +16,31 @@ body {
   margin-top: 0 !important;
 }
 
+/* Fix icon positioning */
+.notion-page-icon-hero {
+  position: relative !important;
+  display: inline-block !important;
+  margin-left: 0 !important;
+  left: 0 !important;
+  transform: none !important;
+}
+
+.notion-page-icon-cover {
+  position: relative !important;
+  left: 0 !important;
+  transform: none !important;
+  margin-left: calc(env(safe-area-inset-left) + 96px) !important;
+}
+
+.notion-page-icon-wrapper {
+  position: relative !important;
+}
+
+/* Ensure header area doesn't overlap */
+.notion-page-content-inner {
+  position: relative;
+}
+
 /* Login styles */
 .login-container {
   min-height: 100vh;
