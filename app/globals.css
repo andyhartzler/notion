@@ -41,6 +41,50 @@ body {
   position: relative;
 }
 
+/* Database/Collection styles */
+.notion-collection {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.notion-collection-header {
+  padding: 0 !important;
+}
+
+.notion-table {
+  width: 100% !important;
+}
+
+.notion-table-view {
+  padding: 0 !important;
+}
+
+.notion-board {
+  padding: 0 !important;
+}
+
+.notion-gallery {
+  padding: 0 !important;
+}
+
+.notion-list {
+  padding: 0 !important;
+}
+
+.notion-calendar {
+  padding: 0 !important;
+}
+
+/* Make sure collection content is visible */
+.notion-collection-view-type-calendar,
+.notion-collection-view-type-table,
+.notion-collection-view-type-board,
+.notion-collection-view-type-gallery,
+.notion-collection-view-type-list {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
 /* Login styles */
 .login-container {
   min-height: 100vh;

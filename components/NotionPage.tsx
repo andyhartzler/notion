@@ -4,8 +4,6 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-// Styles are imported in globals.css
-
 const NotionRenderer = dynamic(
   () => import('react-notion-x').then((m) => m.NotionRenderer),
   { ssr: false }
@@ -13,6 +11,16 @@ const NotionRenderer = dynamic(
 
 const Collection = dynamic(
   () => import('react-notion-x/build/third-party/collection').then((m) => m.Collection),
+  { ssr: false }
+)
+
+const Equation = dynamic(
+  () => import('react-notion-x/build/third-party/equation').then((m) => m.Equation),
+  { ssr: false }
+)
+
+const Code = dynamic(
+  () => import('react-notion-x/build/third-party/code').then((m) => m.Code),
   { ssr: false }
 )
 
@@ -66,9 +74,13 @@ export default function NotionPage({ recordMap, rootPageId }: { recordMap: any; 
           recordMap={recordMap}
           fullPage={true}
           darkMode={false}
+          showCollectionViewDropdown={true}
+          linkTableTitleProperties={false}
           mapPageUrl={(id) => `/p/${id}`}
           components={{
-            Collection
+            Collection,
+            Equation,
+            Code,
           }}
         />
       ) : (
