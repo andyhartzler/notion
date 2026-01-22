@@ -2,7 +2,10 @@ import { NotionAPI } from 'notion-client'
 import { Client } from '@notionhq/client'
 
 // Unofficial API for fast reading (used by react-notion-x)
-const notionClient = new NotionAPI()
+const notionClient = new NotionAPI({
+  // Fetch collection/database data
+  authToken: process.env.NOTION_TOKEN_V2 || undefined,
+})
 
 // Official API for writing/editing
 const notion = new Client({
@@ -11,7 +14,11 @@ const notion = new Client({
 
 // Reading (fast, unofficial)
 export async function getPageData(pageId: string) {
-  const recordMap = await notionClient.getPage(pageId)
+  const recordMap = await notionClient.getPage(pageId, {
+    fetchMissingBlocks: true,
+    fetchCollections: true,
+    signFileUrls: false,
+  })
   return recordMap
 }
 

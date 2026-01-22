@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 const NotionRenderer = dynamic(
   () => import('react-notion-x').then((m) => m.NotionRenderer),
@@ -11,7 +12,7 @@ const NotionRenderer = dynamic(
 
 const Collection = dynamic(
   () => import('react-notion-x/build/third-party/collection').then((m) => m.Collection),
-  { ssr: false }
+  { ssr: false, loading: () => <div style={{padding: '1rem', color: '#666'}}>Loading database...</div> }
 )
 
 export default function NotionPageClient({ recordMap }: { recordMap: any }) {
