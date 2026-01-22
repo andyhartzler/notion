@@ -54,13 +54,14 @@ export default function NotionPage({ recordMap }: NotionPageProps) {
   }
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className="notion-full-width">
       <NotionRenderer
         recordMap={recordMap}
         fullPage={true}
         darkMode={true}
         mapPageUrl={(id) => `/p/${id}`}
         showCollectionViewDropdown={true}
+        disableHeader={false}
         components={{
           Collection,
         }}

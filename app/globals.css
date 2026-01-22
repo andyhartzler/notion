@@ -33,13 +33,186 @@ body {
   --bg-color: #191919 !important;
 }
 
-/* Fix for notion content display */
+/* FULL WIDTH - Make everything full screen like Notion */
 .notion-page {
   padding-top: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.notion-page-content {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding: 0 24px !important;
+}
+
+.notion-page-content-inner {
+  max-width: 100% !important;
+  width: 100% !important;
 }
 
 .notion-title {
   margin-top: 0 !important;
+  max-width: 100% !important;
+}
+
+.notion-frame {
+  padding: 0 !important;
+}
+
+.notion-page-no-cover {
+  margin-top: 0 !important;
+}
+
+/* Full width for all block types */
+.notion-block {
+  max-width: 100% !important;
+}
+
+.notion-text {
+  max-width: 100% !important;
+}
+
+/* Tables full width */
+.notion-table {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.notion-table-view {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+.notion-collection {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.notion-collection-view-body {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Board/Kanban full width */
+.notion-board {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+/* Gallery full width */
+.notion-gallery {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+/* List full width */
+.notion-list {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+/* Force full width container */
+.notion-full-width {
+  width: 100% !important;
+}
+
+.notion-full-width .notion-page {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.notion-full-width .notion-page-content {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+}
+
+/* Remove any centering constraints */
+.notion-full-width .super-content {
+  max-width: 100% !important;
+}
+
+/* Notion asset wrapper */
+.notion-asset-wrapper {
+  max-width: 100% !important;
+}
+
+.notion-asset-wrapper-full {
+  max-width: 100% !important;
+}
+
+/* Collection row */
+.notion-collection-row {
+  max-width: 100% !important;
+}
+
+.notion-collection-row-body {
+  max-width: 100% !important;
+}
+
+/* Table specific - prevent horizontal scroll in tiny box */
+.notion-simple-table {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.notion-simple-table-wrap {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+}
+
+/* Viewport constraint removal */
+.notion-viewport {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Content wrapper */
+.notion-page-content-inner {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+}
+
+/* Header area */
+.notion-header {
+  max-width: 100% !important;
+}
+
+/* Page title */
+.notion-page-title-text {
+  max-width: 100% !important;
+}
+
+/* Scroller */
+.notion-scroller {
+  width: 100% !important;
+}
+
+/* App inner */
+.notion-app-inner {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Default full-width setting */
+.notion-page.notion-full-page {
+  padding-bottom: 20vh !important;
+}
+
+/* Override the narrow default width */
+.notion-page-content,
+.notion-page-content-inner,
+.notion-collection-page-content {
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 /* Fix icon positioning */

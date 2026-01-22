@@ -20,6 +20,23 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const pathname = usePathname()
   const [pages, setPages] = useState<PageItem[]>([])
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
+
+  // Auto-expand all on load
+  useEffect(() => {
+    if (pages.length > 0) {
+      const allIds = new Set<string>()
+      const collectIds = (items: PageItem[]) => {
+        for (const item of items) {
+          if (item.children && item.children.length > 0) {
+            allIds.add(item.id)
+            collectIds(item.children)
+          }
+        }
+      }
+      collectIds(pages)
+      setExpandedIds(allIds)
+    }
+  }, [pages])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -91,8 +108,14 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           )}
           {!hasChildren && <span style={{ width: '22px' }} />}
 
-          <span style={{ marginRight: '6px', fontSize: '16px' }}>
-            {page.icon || '📄'}
+          <span style={{ marginRight: '6px', fontSize: '16px', display: 'inline-flex', alignItems: 'center' }}>
+            {page.icon ? (
+              page.icon.startsWith('http') || page.icon.startsWith('/') ? (
+                <img src={page.icon} alt="" style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
+              ) : (
+                page.icon
+              )
+            ) : '📄'}
           </span>
 
           <Link
