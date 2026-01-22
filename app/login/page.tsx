@@ -27,10 +27,10 @@ export default function LoginPage() {
         router.push('/')
         router.refresh()
       } else {
-        setError('Invalid password. Please try again.')
+        setError('Invalid password')
       }
     } catch (err) {
-      setError('An error occurred. Please try again.')
+      setError('An error occurred')
     } finally {
       setLoading(false)
     }
@@ -38,9 +38,8 @@ export default function LoginPage() {
 
   return (
     <div className="login-container">
-      <div className="login-box">
-        <h1>Together KC</h1>
-        <p>Enter the password to access the campaign hub.</p>
+      <div className="login-box" style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>🔒</div>
 
         <form onSubmit={handleSubmit}>
           {error && <div className="login-error">{error}</div>}
@@ -55,7 +54,7 @@ export default function LoginPage() {
           />
 
           <button type="submit" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? '...' : 'Enter'}
           </button>
         </form>
       </div>
