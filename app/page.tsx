@@ -1,9 +1,8 @@
 import { redirect } from 'next/navigation'
 
+// Together KC Command Center page ID
+const ROOT_PAGE_ID = '2efc4b28b1ea8174b74fd0a4a148c5d0'
+
 export default function HomePage() {
-  const rootPageId = process.env.NOTION_ROOT_PAGE_ID
-  if (!rootPageId) {
-    return <div>Setup required - set NOTION_ROOT_PAGE_ID</div>
-  }
-  redirect(`/p/${rootPageId}`)
+  redirect(`/p/${ROOT_PAGE_ID}`)
 }

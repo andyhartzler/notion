@@ -1,101 +1,26 @@
+import { NotionAPI } from 'notion-client'
 import { Client } from '@notionhq/client'
-import type {
-  BlockObjectResponse,
-  PageObjectResponse,
-  DatabaseObjectResponse,
-  QueryDatabaseResponse,
-} from '@notionhq/client/build/src/api-endpoints'
 
+// Unofficial API for fast reading (used by react-notion-x)
+const notionClient = new NotionAPI()
+
+// Official API for writing/editing
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
 })
 
-export async function getPage(pageId: string): Promise<PageObjectResponse> {
-  const response = await notion.pages.retrieve({ page_id: pageId })
-  return response as PageObjectResponse
+// Reading (fast, unofficial)
+export async function getPageData(pageId: string) {
+  const recordMap = await notionClient.getPage(pageId)
+  return recordMap
 }
 
-export async function getDatabase(databaseId: string): Promise<DatabaseObjectResponse> {
-  const response = await notion.databases.retrieve({ database_id: databaseId })
-  return response as DatabaseObjectResponse
+export function getPageTitle(recordMap: any): string {
+  const pageBlock = Object.values(recordMap.block)[0] as any
+  return pageBlock?.value?.properties?.title?.[0]?.[0] || 'Untitled'
 }
 
-export async function queryDatabase(databaseId: string): Promise<QueryDatabaseResponse> {
-  const response = await notion.databases.query({
-    database_id: databaseId,
-    page_size: 100,
-  })
-  return response
-}
-
-export async function getBlocks(blockId: string): Promise<BlockObjectResponse[]> {
-  const blocks: BlockObjectResponse[] = []
-  let cursor: string | undefined
-
-  while (true) {
-    const response = await notion.blocks.children.list({
-      block_id: blockId,
-      start_cursor: cursor,
-      page_size: 100,
-    })
-
-    for (const block of response.results) {
-      if ('type' in block) {
-        blocks.push(block as BlockObjectResponse)
-
-        // Recursively get children for blocks that have them
-        if (block.has_children && block.type !== 'child_page' && block.type !== 'child_database') {
-          const children = await getBlocks(block.id)
-          ;(block as any).children = children
-        }
-      }
-    }
-
-    if (!response.has_more) break
-    cursor = response.next_cursor ?? undefined
-  }
-
-  return blocks
-}
-
-export async function getNavigation(rootPageId: string): Promise<NavItem[]> {
-  const blocks = await notion.blocks.children.list({
-    block_id: rootPageId,
-    page_size: 100,
-  })
-
-  const navItems: NavItem[] = []
-
-  for (const block of blocks.results) {
-    if ('type' in block) {
-      if (block.type === 'child_page') {
-        navItems.push({
-          id: block.id,
-          title: (block as any).child_page?.title || 'Untitled',
-          type: 'page',
-          icon: '📄',
-        })
-      } else if (block.type === 'child_database') {
-        navItems.push({
-          id: block.id,
-          title: (block as any).child_database?.title || 'Database',
-          type: 'database',
-          icon: '📊',
-        })
-      }
-    }
-  }
-
-  return navItems
-}
-
-export interface NavItem {
-  id: string
-  title: string
-  type: 'page' | 'database'
-  icon: string
-}
-
+// Writing (official API)
 export async function updateBlock(blockId: string, content: any) {
   return notion.blocks.update({
     block_id: blockId,
@@ -126,63 +51,18 @@ export async function searchPages(query: string) {
 
   return response.results.map((page: any) => ({
     id: page.id,
-    title: getPageTitle(page),
+    title: page.properties?.title?.title?.[0]?.plain_text || 'Untitled',
     icon: page.icon?.emoji || '📄',
   }))
 }
 
-export function getPageTitle(page: any): string {
-  if (!page?.properties) return 'Untitled'
-
-  const titleProp = Object.values(page.properties).find(
-    (prop: any) => prop.type === 'title'
-  ) as any
-
-  if (titleProp?.title?.[0]?.plain_text) {
-    return titleProp.title.map((t: any) => t.plain_text).join('') || 'Untitled'
-  }
-
-  return 'Untitled'
+export async function getDatabase(databaseId: string) {
+  return notion.databases.retrieve({ database_id: databaseId })
 }
 
-export function getPageIcon(page: any): string {
-  if (page?.icon?.emoji) return page.icon.emoji
-  return '📄'
+export async function queryDatabase(databaseId: string) {
+  return notion.databases.query({
+    database_id: databaseId,
+    page_size: 100,
+  })
 }
-
-export function getDatabasePropertyValue(property: any): string {
-  if (!property) return ''
-
-  switch (property.type) {
-    case 'title':
-      return property.title?.map((t: any) => t.plain_text).join('') || ''
-    case 'rich_text':
-      return property.rich_text?.map((t: any) => t.plain_text).join('') || ''
-    case 'number':
-      return property.number?.toString() || ''
-    case 'select':
-      return property.select?.name || ''
-    case 'multi_select':
-      return property.multi_select?.map((s: any) => s.name).join(', ') || ''
-    case 'date':
-      return property.date?.start || ''
-    case 'checkbox':
-      return property.checkbox ? '✓' : ''
-    case 'url':
-      return property.url || ''
-    case 'email':
-      return property.email || ''
-    case 'phone_number':
-      return property.phone_number || ''
-    case 'status':
-      return property.status?.name || ''
-    case 'people':
-      return property.people?.map((p: any) => p.name).join(', ') || ''
-    case 'relation':
-      return `${property.relation?.length || 0} linked`
-    default:
-      return ''
-  }
-}
-
-export { notion }
