@@ -7,12 +7,19 @@ import Link from 'next/link'
 // Import styles
 import 'react-notion-x/src/styles.css'
 
+// Dynamic imports for performance
 const NotionRenderer = dynamic(
   () => import('react-notion-x').then((m) => m.NotionRenderer),
   {
     ssr: false,
     loading: () => <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>
   }
+)
+
+// Collection component for database views
+const Collection = dynamic(
+  () => import('react-notion-x/build/third-party/collection').then((m) => m.Collection),
+  { ssr: false }
 )
 
 export default function NotionPage({ recordMap, rootPageId }: { recordMap: any; rootPageId: string }) {
@@ -23,7 +30,6 @@ export default function NotionPage({ recordMap, rootPageId }: { recordMap: any; 
     router.push('/login')
   }
 
-  // Check if we have content
   const hasContent = recordMap?.block && Object.keys(recordMap.block).length > 0
 
   return (
@@ -69,6 +75,7 @@ export default function NotionPage({ recordMap, rootPageId }: { recordMap: any; 
           disableHeader={false}
           mapPageUrl={(id) => `/p/${id}`}
           components={{
+            Collection,
             PageLink: ({ href, children, ...props }: any) => (
               <Link href={href} {...props}>{children}</Link>
             )
@@ -80,11 +87,7 @@ export default function NotionPage({ recordMap, rootPageId }: { recordMap: any; 
           <p style={{ marginTop: '1rem', fontSize: '0.875rem' }}>
             Make sure the page is shared publicly in Notion.
           </p>
-          <Link href="/" style={{
-            display: 'inline-block',
-            marginTop: '1.5rem',
-            color: '#0077C8'
-          }}>
+          <Link href="/" style={{ display: 'inline-block', marginTop: '1.5rem', color: '#0077C8' }}>
             ← Back to Command Center
           </Link>
         </div>
