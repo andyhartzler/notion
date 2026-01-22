@@ -3,24 +3,48 @@
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 
+// Import NotionRenderer with SSR disabled
 const NotionRenderer = dynamic(
   () => import('react-notion-x').then((m) => m.NotionRenderer),
-  { ssr: false, loading: () => <div style={{padding: '2rem'}}>Loading content...</div> }
+  {
+    ssr: false,
+    loading: () => <div style={{padding: '2rem', textAlign: 'center'}}>Loading content...</div>
+  }
 )
 
+// Import Collection component - required for database/collection views
 const Collection = dynamic(
-  () => import('react-notion-x/build/third-party/collection').then((m) => m.Collection),
-  { ssr: false, loading: () => <div style={{padding: '1rem', color: '#666'}}>Loading database...</div> }
+  () => import('react-notion-x/build/third-party/collection').then((m) => {
+    console.log('Collection component loaded:', m.Collection)
+    return m
+  }).then((m) => m.Collection),
+  {
+    ssr: false,
+  }
 )
 
 export default function NotionPageClient({ recordMap }: { recordMap: any }) {
   const router = useRouter()
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+    // Debug log
+    console.log('RecordMap keys:', Object.keys(recordMap))
+    console.log('Has collection:', !!recordMap.collection)
+    console.log('Collection count:', Object.keys(recordMap.collection || {}).length)
+    console.log('Collection view count:', Object.keys(recordMap.collection_view || {}).length)
+  }, [recordMap])
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
     router.push('/login')
+  }
+
+  if (!isClient) {
+    return <div style={{padding: '2rem', textAlign: 'center'}}>Loading...</div>
   }
 
   return (
