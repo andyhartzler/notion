@@ -182,7 +182,7 @@ export default function NotionBlock({ block }: { block: Block }) {
     case 'link_to_page':
       const pageId = block.link_to_page?.page_id
       return pageId ? (
-        <Link href={`/page/${pageId}`} className="child-page-link">
+        <Link href={`/p/${pageId}`} className="child-page-link">
           <span className="child-page-icon">📄</span>
           <span>Linked Page</span>
         </Link>
@@ -190,7 +190,7 @@ export default function NotionBlock({ block }: { block: Block }) {
 
     case 'child_page':
       return (
-        <Link href={`/page/${block.id}`} className="child-page-link">
+        <Link href={`/p/${block.id}`} className="child-page-link">
           <span className="child-page-icon">📄</span>
           <span>{block.child_page?.title || 'Untitled'}</span>
         </Link>
@@ -198,7 +198,7 @@ export default function NotionBlock({ block }: { block: Block }) {
 
     case 'child_database':
       return (
-        <Link href={`/page/${block.id}`} className="child-page-link">
+        <Link href={`/p/${block.id}`} className="child-page-link">
           <span className="child-page-icon">📊</span>
           <span>{block.child_database?.title || 'Database'}</span>
         </Link>

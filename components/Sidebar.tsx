@@ -25,7 +25,7 @@ export default function Sidebar({
     <aside className="sidebar">
       <div style={{ padding: '0.5rem 1rem', marginBottom: '0.5rem' }}>
         <Link
-          href={`/page/${rootPageId}`}
+          href={`/p/${rootPageId}`}
           className={`sidebar-item ${currentPageId === rootPageId ? 'active' : ''}`}
           style={{ fontWeight: 600 }}
         >
@@ -49,7 +49,7 @@ export default function Sidebar({
         {items.map((item) => (
           <Link
             key={item.id}
-            href={`/page/${item.id}`}
+            href={`/p/${item.id}`}
             className={`sidebar-item ${currentPageId === item.id ? 'active' : ''}`}
           >
             <span>{item.icon}</span>
