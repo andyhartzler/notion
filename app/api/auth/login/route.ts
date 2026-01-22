@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const SITE_PASSWORD = process.env.SITE_PASSWORD || '1p4win'
-
 export async function POST(request: NextRequest) {
   const { password } = await request.json()
+  const expected = process.env.SITE_PASSWORD?.trim() || '1p4win'
 
-  if (password === SITE_PASSWORD) {
+  if (password === expected) {
     const response = NextResponse.json({ success: true })
     response.cookies.set('site-auth', 'authenticated', {
       httpOnly: true,
