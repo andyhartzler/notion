@@ -10,115 +10,200 @@ interface PageItem {
   children: PageItem[]
 }
 
-async function getAllPages(rootPageId: string): Promise<PageItem[]> {
-  const recordMap = await notion.getPage(rootPageId.replace(/-/g, ''), {
-    fetchMissingBlocks: true,
-    fetchCollections: true,
-  })
+async function getPageWithChildren(pageId: string): Promise<PageItem[]> {
+  try {
+    const recordMap = await notion.getPage(pageId.replace(/-/g, ''), {
+      fetchMissingBlocks: true,
+      fetchCollections: true,
+    })
 
-  const blocks = recordMap.block || {}
-  const pages: PageItem[] = []
-  const processedIds = new Set<string>()
+    const blocks = recordMap.block || {}
+    const pages: PageItem[] = []
+    const processedIds = new Set<string>()
 
-  // Helper to extract page info
-  const getPageInfo = (blockId: string, block: any): PageItem | null => {
-    if (!block?.value) return null
-    const value = block.value
+    const processBlock = (blockId: string): PageItem | null => {
+      if (processedIds.has(blockId)) return null
+      processedIds.add(blockId)
 
-    if (value.type !== 'page' && value.type !== 'collection_view_page') {
-      return null
-    }
+      const block = blocks[blockId]
+      if (!block?.value) return null
+      const value = block.value
 
-    const title = value.properties?.title?.[0]?.[0] || 'Untitled'
-    let icon = null
-    if (value.format?.page_icon) {
-      icon = value.format.page_icon
-    }
+      if (value.type !== 'page' && value.type !== 'collection_view_page') {
+        return null
+      }
 
-    return {
-      id: blockId,
-      title,
-      icon,
-      children: []
-    }
-  }
+      const title = value.properties?.title?.[0]?.[0] || 'Untitled'
+      let icon = value.format?.page_icon || null
 
-  // Recursively process blocks
-  const processBlock = (blockId: string, depth: number = 0): PageItem | null => {
-    if (processedIds.has(blockId) || depth > 5) return null
-    processedIds.add(blockId)
+      const pageItem: PageItem = {
+        id: blockId,
+        title,
+        icon,
+        children: []
+      }
 
-    const block = blocks[blockId]
-    if (!block?.value) return null
-
-    const value = block.value
-
-    // Handle page and collection_view_page
-    if (value.type === 'page' || value.type === 'collection_view_page') {
-      const pageInfo = getPageInfo(blockId, block)
-      if (!pageInfo) return null
-
-      // Process children
+      // Get children
       if (value.content && Array.isArray(value.content)) {
         for (const childId of value.content) {
-          const childPage = processBlock(childId, depth + 1)
-          if (childPage) {
-            pageInfo.children.push(childPage)
+          const childBlock = blocks[childId]
+          if (childBlock?.value?.type === 'page' || childBlock?.value?.type === 'collection_view_page') {
+            const childTitle = childBlock.value.properties?.title?.[0]?.[0] || 'Untitled'
+            const childIcon = childBlock.value.format?.page_icon || null
+            pageItem.children.push({
+              id: childId,
+              title: childTitle,
+              icon: childIcon,
+              children: []
+            })
           }
         }
       }
 
-      return pageInfo
+      return pageItem
     }
 
-    // Handle alias/link_to_page
-    if (value.type === 'alias') {
-      const linkedId = value.format?.alias_pointer?.id
-      if (linkedId && blocks[linkedId]) {
-        return processBlock(linkedId, depth)
-      }
-    }
-
-    return null
-  }
-
-  // Get root page content
-  const rootBlock = blocks[rootPageId.replace(/-/g, '')]
-  if (rootBlock?.value?.content) {
-    for (const blockId of rootBlock.value.content) {
-      const page = processBlock(blockId)
-      if (page) {
-        pages.push(page)
-      }
-    }
-  }
-
-  // Also find any pages that are direct children of space but linked from root
-  for (const [blockId, blockData] of Object.entries(blocks)) {
-    const block = blockData as any
-    if (processedIds.has(blockId)) continue
-
-    if (block?.value?.type === 'page' || block?.value?.type === 'collection_view_page') {
-      // Check if it's a top-level page that we haven't processed
-      const parentId = block.value.parent_id?.replace(/-/g, '')
-      const rootId = rootPageId.replace(/-/g, '')
-
-      if (parentId === rootId) {
+    // Get the page content
+    const rootBlock = blocks[pageId.replace(/-/g, '')]
+    if (rootBlock?.value?.content) {
+      for (const blockId of rootBlock.value.content) {
         const page = processBlock(blockId)
         if (page) {
           pages.push(page)
         }
       }
     }
-  }
 
-  return pages
+    return pages
+  } catch (error) {
+    console.error('Error fetching page:', pageId, error)
+    return []
+  }
 }
 
 export async function GET() {
   try {
     const rootPageId = process.env.NOTION_ROOT_PAGE_ID || '2efc4b28b1ea8174b74fd0a4a148c5d0'
-    const pages = await getAllPages(rootPageId)
+
+    // Fetch main command center page
+    const mainRecordMap = await notion.getPage(rootPageId.replace(/-/g, ''), {
+      fetchMissingBlocks: true,
+      fetchCollections: true,
+    })
+
+    const blocks = mainRecordMap.block || {}
+    const pages: PageItem[] = []
+    const processedIds = new Set<string>()
+
+    // Wiki page ID from the user's URL
+    const wikiPageId = '2efc4b28b1ea81ada46bc5258a27893d'
+
+    // Process main page content
+    const rootBlock = blocks[rootPageId.replace(/-/g, '')]
+    if (rootBlock?.value?.content) {
+      for (const blockId of rootBlock.value.content) {
+        if (processedIds.has(blockId)) continue
+        processedIds.add(blockId)
+
+        const block = blocks[blockId]
+        if (!block?.value) continue
+        const value = block.value
+
+        // Handle alias/link blocks
+        let targetId = blockId
+        let targetBlock = block
+        if (value.type === 'alias') {
+          targetId = value.format?.alias_pointer?.id || blockId
+          targetBlock = blocks[targetId] || block
+        }
+
+        const targetValue = targetBlock?.value
+        if (!targetValue) continue
+
+        if (targetValue.type === 'page' || targetValue.type === 'collection_view_page') {
+          const title = targetValue.properties?.title?.[0]?.[0] || 'Untitled'
+          const icon = targetValue.format?.page_icon || null
+
+          const pageItem: PageItem = {
+            id: targetId,
+            title,
+            icon,
+            children: []
+          }
+
+          // Get direct children from the same recordMap
+          if (targetValue.content && Array.isArray(targetValue.content)) {
+            for (const childId of targetValue.content) {
+              const childBlock = blocks[childId]
+              if (childBlock?.value?.type === 'page' || childBlock?.value?.type === 'collection_view_page') {
+                pageItem.children.push({
+                  id: childId,
+                  title: childBlock.value.properties?.title?.[0]?.[0] || 'Untitled',
+                  icon: childBlock.value.format?.page_icon || null,
+                  children: []
+                })
+              }
+            }
+          }
+
+          // Special handling for wiki page - fetch its children separately
+          if (targetId.replace(/-/g, '') === wikiPageId.replace(/-/g, '') ||
+              title.toLowerCase().includes('wiki') ||
+              title.toLowerCase().includes('reference')) {
+            const wikiChildren = await getPageWithChildren(targetId)
+            if (wikiChildren.length > 0) {
+              // The wiki page itself was returned, get its children
+              pageItem.children = wikiChildren
+            }
+          }
+
+          pages.push(pageItem)
+        }
+      }
+    }
+
+    // If wiki not found in main page, fetch it directly
+    const hasWiki = pages.some(p =>
+      p.id.replace(/-/g, '') === wikiPageId.replace(/-/g, '') ||
+      p.title.toLowerCase().includes('wiki')
+    )
+
+    if (!hasWiki) {
+      try {
+        const wikiRecordMap = await notion.getPage(wikiPageId, {
+          fetchMissingBlocks: true,
+        })
+        const wikiBlocks = wikiRecordMap.block || {}
+        const wikiBlock = wikiBlocks[wikiPageId]
+
+        if (wikiBlock?.value) {
+          const wikiPage: PageItem = {
+            id: wikiPageId,
+            title: wikiBlock.value.properties?.title?.[0]?.[0] || 'Campaign Reference Wiki',
+            icon: wikiBlock.value.format?.page_icon || '📚',
+            children: []
+          }
+
+          if (wikiBlock.value.content) {
+            for (const childId of wikiBlock.value.content) {
+              const childBlock = wikiBlocks[childId]
+              if (childBlock?.value?.type === 'page' || childBlock?.value?.type === 'collection_view_page') {
+                wikiPage.children.push({
+                  id: childId,
+                  title: childBlock.value.properties?.title?.[0]?.[0] || 'Untitled',
+                  icon: childBlock.value.format?.page_icon || null,
+                  children: []
+                })
+              }
+            }
+          }
+
+          pages.push(wikiPage)
+        }
+      } catch (e) {
+        console.error('Error fetching wiki:', e)
+      }
+    }
 
     return NextResponse.json({ pages })
   } catch (error: any) {

@@ -85,6 +85,60 @@ body {
   padding: 0 !important;
 }
 
+/* Fix table column alignment - ensure headers and rows match */
+.notion-collection-table {
+  width: 100% !important;
+  table-layout: fixed !important;
+}
+
+.notion-table-header {
+  width: 100% !important;
+}
+
+.notion-table-header-inner {
+  width: 100% !important;
+}
+
+.notion-table-body {
+  width: 100% !important;
+}
+
+.notion-table-row {
+  width: 100% !important;
+  display: table-row !important;
+}
+
+.notion-table-cell {
+  vertical-align: top !important;
+}
+
+/* Ensure column widths are consistent */
+.notion-collection-column-title {
+  width: auto !important;
+}
+
+/* Timeline view styles */
+.notion-timeline {
+  width: 100% !important;
+  overflow-x: auto !important;
+}
+
+.notion-timeline-view {
+  width: 100% !important;
+  min-height: 400px !important;
+}
+
+.notion-timeline-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
+}
+
+.notion-timeline-item {
+  display: flex !important;
+  align-items: center !important;
+}
+
 .notion-collection {
   width: 100% !important;
   max-width: 100% !important;

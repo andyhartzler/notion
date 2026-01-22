@@ -4,6 +4,7 @@ import { NotionRenderer } from 'react-notion-x'
 import { Collection } from 'react-notion-x/build/third-party/collection'
 import { useEffect, useState, useRef } from 'react'
 import CalendarFallback from './CalendarFallback'
+import TimelineFallback from './TimelineFallback'
 
 interface NotionPageProps {
   recordMap: any
@@ -47,10 +48,14 @@ export default function NotionPage({ recordMap }: NotionPageProps) {
     console.log('NotionPage - Page type:', firstBlock?.value?.type, 'View type:', viewType)
   }, [firstBlock, viewType])
 
-  // For collection pages with calendar/table/board views, use custom renderer directly
+  // For collection pages with calendar/timeline views, use custom renderer directly
   // since react-notion-x has known issues with these
   if (isCollectionPage && (viewType === 'calendar' || useCustomRenderer)) {
     return <CalendarFallback recordMap={recordMap} />
+  }
+
+  if (isCollectionPage && viewType === 'timeline') {
+    return <TimelineFallback recordMap={recordMap} />
   }
 
   return (
