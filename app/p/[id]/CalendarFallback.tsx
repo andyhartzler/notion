@@ -140,14 +140,12 @@ export default function CalendarFallback({ recordMap }: CalendarFallbackProps) {
   return (
     <div style={{
       background: '#191919',
-      minHeight: '100vh',
       color: 'rgba(255,255,255,0.81)',
       fontFamily: 'ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif'
     }}>
       {/* Header */}
       <div style={{
-        padding: '12px 96px',
-        borderBottom: '1px solid rgba(255,255,255,0.1)'
+        padding: '12px 24px',
       }}>
         <h1 style={{
           fontSize: '40px',
@@ -164,7 +162,7 @@ export default function CalendarFallback({ recordMap }: CalendarFallbackProps) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '8px 96px',
+        padding: '8px 24px',
         borderBottom: '1px solid rgba(255,255,255,0.1)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -206,7 +204,7 @@ export default function CalendarFallback({ recordMap }: CalendarFallbackProps) {
       </div>
 
       {/* Calendar Grid */}
-      <div style={{ padding: '0 96px 24px' }}>
+      <div style={{ padding: '0 24px 24px' }}>
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(7, 1fr)',
