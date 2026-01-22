@@ -4,19 +4,13 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-// Import styles
-import 'react-notion-x/src/styles.css'
+// Styles are imported in globals.css
 
-// Dynamic imports for performance
 const NotionRenderer = dynamic(
   () => import('react-notion-x').then((m) => m.NotionRenderer),
-  {
-    ssr: false,
-    loading: () => <div style={{ padding: '2rem', textAlign: 'center' }}>Loading...</div>
-  }
+  { ssr: false }
 )
 
-// Collection component for database views
 const Collection = dynamic(
   () => import('react-notion-x/build/third-party/collection').then((m) => m.Collection),
   { ssr: false }
@@ -72,21 +66,14 @@ export default function NotionPage({ recordMap, rootPageId }: { recordMap: any; 
           recordMap={recordMap}
           fullPage={true}
           darkMode={false}
-          disableHeader={false}
           mapPageUrl={(id) => `/p/${id}`}
           components={{
-            Collection,
-            PageLink: ({ href, children, ...props }: any) => (
-              <Link href={href} {...props}>{children}</Link>
-            )
+            Collection
           }}
         />
       ) : (
         <div style={{ padding: '4rem 2rem', textAlign: 'center', color: '#6b6b6b' }}>
           <p>This page couldn't be loaded.</p>
-          <p style={{ marginTop: '1rem', fontSize: '0.875rem' }}>
-            Make sure the page is shared publicly in Notion.
-          </p>
           <Link href="/" style={{ display: 'inline-block', marginTop: '1.5rem', color: '#0077C8' }}>
             ← Back to Command Center
           </Link>
