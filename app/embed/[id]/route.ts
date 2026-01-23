@@ -21,7 +21,7 @@ export async function GET(
   </style>
 </head>
 <body>
-  <iframe src="https://v2-embednotion.com/${pageId}" allowfullscreen></iframe>
+  <iframe src="https://notion-embed.hartzler.workers.dev/${pageId}" allowfullscreen></iframe>
 </body>
 </html>`
 
