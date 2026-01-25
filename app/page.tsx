@@ -1,6 +1,33 @@
-import Link from 'next/link'
+'use client'
 
-export default function Home() {
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+
+export default function LoginPage() {
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password }),
+    })
+
+    if (res.ok) {
+      router.push('/dashboard')
+    } else {
+      setError('Incorrect password')
+      setLoading(false)
+    }
+  }
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -12,35 +39,50 @@ export default function Home() {
       padding: '2rem',
       background: '#fafafa'
     }}>
-      <h1 style={{ marginBottom: '2rem', color: '#333' }}>Together KC</h1>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <Link
-          href="/embed/2efc4b28b1ea81ada46bc5258a27893d"
+      <h1 style={{ marginBottom: '0.5rem', color: '#333' }}>Together KC</h1>
+      <p style={{ marginBottom: '2rem', color: '#666' }}>Enter password to continue</p>
+
+      <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '300px' }}>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
           style={{
-            padding: '1rem 2rem',
-            background: '#000',
-            color: '#fff',
-            textDecoration: 'none',
+            width: '100%',
+            padding: '0.75rem 1rem',
+            fontSize: '1rem',
+            border: '1px solid #ddd',
             borderRadius: '8px',
-            textAlign: 'center'
+            marginBottom: '1rem',
+            boxSizing: 'border-box'
+          }}
+          autoFocus
+        />
+
+        {error && (
+          <p style={{ color: '#e53e3e', marginBottom: '1rem', textAlign: 'center' }}>
+            {error}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            width: '100%',
+            padding: '0.75rem 1rem',
+            fontSize: '1rem',
+            background: loading ? '#666' : '#000',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: loading ? 'not-allowed' : 'pointer'
           }}
         >
-          Campaign Reference Wiki
-        </Link>
-        <Link
-          href="/embed/2efc4b28b1ea8174b74fd0a4a148c5d0"
-          style={{
-            padding: '1rem 2rem',
-            background: '#000',
-            color: '#fff',
-            textDecoration: 'none',
-            borderRadius: '8px',
-            textAlign: 'center'
-          }}
-        >
-          Together KC Command Center
-        </Link>
-      </div>
+          {loading ? 'Checking...' : 'Enter'}
+        </button>
+      </form>
     </div>
   )
 }
