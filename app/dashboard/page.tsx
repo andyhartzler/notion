@@ -12,7 +12,7 @@ export default function Dashboard() {
       padding: '2rem',
       background: '#fafafa'
     }}>
-      <h1 style={{ marginBottom: '2rem', color: '#333' }}>Together KC</h1>
+      <h1 style={{ marginBottom: '2rem', color: '#333' }}>Campaigns</h1>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', maxWidth: '300px' }}>
         <Link
           href="/embed/2efc4b28b1ea81ada46bc5258a27893d"

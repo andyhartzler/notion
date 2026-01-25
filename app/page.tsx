@@ -39,7 +39,7 @@ export default function LoginPage() {
       padding: '2rem',
       background: '#fafafa'
     }}>
-      <h1 style={{ marginBottom: '0.5rem', color: '#333' }}>Together KC</h1>
+      <h1 style={{ marginBottom: '0.5rem', color: '#333' }}>Campaigns</h1>
       <p style={{ marginBottom: '2rem', color: '#666' }}>Enter password to continue</p>
 
       <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '300px' }}>
