@@ -8,7 +8,7 @@ export async function GET(
 ) {
   const pageId = params.id
 
-  // Just redirect to embednotion.com which has proper infrastructure
+  // Embed with banner hidden by clipping the top
   const html = `<!DOCTYPE html>
 <html>
 <head>
@@ -17,11 +17,26 @@ export async function GET(
   <style>
     * { margin: 0; padding: 0; }
     html, body { height: 100%; width: 100%; overflow: hidden; }
-    iframe { width: 100%; height: 100%; border: none; }
+    .iframe-container {
+      width: 100%;
+      height: calc(100% + 50px);
+      overflow: hidden;
+      position: relative;
+    }
+    iframe {
+      width: 100%;
+      height: calc(100% + 50px);
+      border: none;
+      position: absolute;
+      top: -50px;
+      left: 0;
+    }
   </style>
 </head>
 <body>
-  <iframe src="https://notion-embed.hartzler.workers.dev/${pageId}" allowfullscreen></iframe>
+  <div class="iframe-container">
+    <iframe src="https://notion-embed.hartzler.workers.dev/${pageId}" allowfullscreen></iframe>
+  </div>
 </body>
 </html>`
 
