@@ -40,9 +40,8 @@ export default function CountdownWidget() {
     <div style={{
       fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
       padding: '16px 20px',
-      background: 'linear-gradient(135deg, #EBF5FF 0%, #F0F7FF 100%)',
-      borderRadius: '12px',
-      border: '1px solid #B8D4F0',
+      background: '#2f2f2f',
+      borderRadius: '8px',
       maxWidth: '400px',
       margin: '0 auto',
     }}>
@@ -51,7 +50,7 @@ export default function CountdownWidget() {
         alignItems: 'center',
         gap: '8px',
         marginBottom: '12px',
-        color: '#0057A0',
+        color: '#9a9a9a',
         fontSize: '12px',
         fontWeight: 600,
         textTransform: 'uppercase',
@@ -66,21 +65,20 @@ export default function CountdownWidget() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          background: 'white',
+          background: '#3b3b3b',
           padding: '12px 16px',
-          borderRadius: '8px',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+          borderRadius: '6px',
         }}>
           <div>
             <div style={{
               fontSize: '14px',
               fontWeight: 600,
-              color: '#1a1a1a',
+              color: '#e0e0e0',
               marginBottom: '2px'
             }}>
               Election Day
             </div>
-            <div style={{ fontSize: '12px', color: '#666' }}>
+            <div style={{ fontSize: '12px', color: '#808080' }}>
               April 7, 2026
             </div>
           </div>
@@ -100,21 +98,20 @@ export default function CountdownWidget() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          background: 'white',
+          background: '#3b3b3b',
           padding: '12px 16px',
-          borderRadius: '8px',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+          borderRadius: '6px',
         }}>
           <div>
             <div style={{
               fontSize: '14px',
               fontWeight: 600,
-              color: '#1a1a1a',
+              color: '#e0e0e0',
               marginBottom: '2px'
             }}>
               Campaign Launch
             </div>
-            <div style={{ fontSize: '12px', color: '#666' }}>
+            <div style={{ fontSize: '12px', color: '#808080' }}>
               February 2, 2026
             </div>
           </div>
