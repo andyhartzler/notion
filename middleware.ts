@@ -4,9 +4,15 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Allow access to login page and API
-  if (pathname === '/' || pathname.startsWith('/api/')) {
-    return NextResponse.next()
+  // Allow access to login page, API, and countdown widget
+  if (pathname === '/' || pathname.startsWith('/api/') || pathname === '/countdown') {
+    const response = NextResponse.next()
+    // Allow iframe embedding for countdown
+    if (pathname === '/countdown') {
+      response.headers.delete('X-Frame-Options')
+      response.headers.set('Content-Security-Policy', 'frame-ancestors *')
+    }
+    return response
   }
 
   // Check for auth cookie
